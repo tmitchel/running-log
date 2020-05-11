@@ -1,9 +1,12 @@
-FROM golang
+FROM golang:1.13
 
-ADD . /Users/tmitchel/Documents/projects/running-log
+WORKDIR /go/src/running-log
+COPY . .
 
-RUN go build -o running-log -v ./cmd/running-log/main.go
+RUN go get -d -v ./...
+RUN go install -v ./...
 
-ENTRYPOINT [ "./running-log" ]
+CMD [ "running-log" ]
 
 EXPOSE 8000
+EXPOSE 6379

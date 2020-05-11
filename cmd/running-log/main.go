@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	db, err := app.OpenStorage("localhost:6379", "")
+	db, err := app.OpenStorage("db:6379", "")
 	if err != nil {
 		logrus.Fatal(err)
 	}
