@@ -13,11 +13,11 @@ import (
 
 type Server struct {
 	*mux.Router
-	DB    *Database
+	DB    *Storage
 	Index *views.View
 }
 
-func NewServer(db *Database) (*Server, error) {
+func NewServer(db *Storage) (*Server, error) {
 	server := &Server{
 		Router: mux.NewRouter().StrictSlash(true),
 		DB:     db,
@@ -64,7 +64,7 @@ func (s *Server) AddRun() http.HandlerFunc {
 			return
 		}
 
-		duration, err := time.ParseDuration(r.FormValue("duration"))
+		_, err = time.ParseDuration(r.FormValue("duration"))
 		if err != nil {
 			logrus.Error(err)
 			return
@@ -96,7 +96,7 @@ func (s *Server) AddRun() http.HandlerFunc {
 		run := Run{
 			ID:              uuid.New(),
 			DistanceInMiles: distanceInMiles,
-			Duration:        duration,
+			Duration:        r.FormValue("duration"),
 			StartTime:       startTime,
 			Podcast:         r.FormValue("podcast"),
 			Episode:         r.FormValue("episode"),
