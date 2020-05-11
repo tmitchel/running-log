@@ -1,7 +1,6 @@
 package app
 
 import (
-	"encoding/json"
 	"time"
 
 	"github.com/google/uuid"
@@ -9,30 +8,24 @@ import (
 
 // Run contains all information about a single run.
 type Run struct {
-	ID              uuid.UUID
-	DistanceInMiles float64
-	Duration        time.Duration
-	StartTime       time.Time
-	Podcast         string
-	Episode         string
-	Quality         string
-	Temperature     int
-	HeartRate       int
-	Walk            bool
+	ID              uuid.UUID `json:"id"`
+	DistanceInMiles float64   `json:"distance_in_miles"`
+	Duration        string    `json:"duration"`
+	StartTime       time.Time `json:"start_time"`
+	Podcast         string    `json:"podcast"`
+	Episode         string    `json:"episode"`
+	Quality         string    `json:"quality"`
+	Temperature     int       `json:"temperature"`
+	HeartRate       int       `json:"heart_rate"`
+	Walk            bool      `json:"walk"`
 }
 
-func (r *Run) MarshalBinary() ([]byte, error) {
-	return json.Marshal(r)
-}
-
-func (r *Run) UnmarshalBinary(data []byte) error {
-	return json.Unmarshal(data, r)
-}
-
+// LoggedRun represents a run with some of the information
+// combined into more useful things.
 type LoggedRun struct {
 	ID              uuid.UUID
 	DistanceInMiles float64
-	Duration        time.Duration
+	Duration        string
 	StartDate       string
 	StartTime       string
 	Podcast         string
