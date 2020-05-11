@@ -8,9 +8,9 @@ Install the app
 git clone git@github.com:tmitchel/running-log.git
 ```
 
-Start the docker containers for the app and for redis
+Build and run the app
 ```
-docker-compose up
+go build -o running-log cmd/running-log/main.go && ./running-log
 ```
 
 Connect to `localhost:8000`

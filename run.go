@@ -1,7 +1,6 @@
 package app
 
 import (
-	"encoding/json"
 	"time"
 
 	"github.com/google/uuid"
@@ -19,14 +18,6 @@ type Run struct {
 	Temperature     int       `json:"temperature"`
 	HeartRate       int       `json:"heart_rate"`
 	Walk            bool      `json:"walk"`
-}
-
-func (r *Run) Marshal() ([]byte, error) {
-	return json.Marshal(r)
-}
-
-func (r *Run) Unmarshal(data []byte) error {
-	return json.Unmarshal(data, r)
 }
 
 type LoggedRun struct {

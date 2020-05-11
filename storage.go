@@ -83,5 +83,6 @@ func (s *Storage) GetRuns() ([]LoggedRun, error) {
 }
 
 func (s *Storage) Reset() error {
+	s.Entries = make([]Run, 0)
 	return os.Remove(s.Name)
 }
