@@ -16,6 +16,9 @@ type Run struct {
 	Podcast         string
 	Episode         string
 	Quality         string
+	Temperature     int
+	HeartRate       int
+	Walk            bool
 }
 
 func (r *Run) MarshalBinary() ([]byte, error) {
@@ -35,4 +38,7 @@ type LoggedRun struct {
 	Podcast         string
 	Episode         string
 	Quality         string
+	Temperature     int
+	HeartRate       int
+	Walk            bool
 }

@@ -1,54 +1,35 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <title>Running Log</title>
-    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-  </head>
-
-  <body>
-
-    <div class="container-fluid">
-      <!-- Our content will go here. -->
-      {{template "yield" .}}
-    </div>
-
-    <!-- jquery & Bootstrap JS -->
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script>
-        function Reset() {
-            var e = document.getElementById("reset");
-            fetch("/api_v1/reset")
-        }
-    </script>
-  </body>
-</html>
-
 {{define "yield"}}
-    <div class="container">
-        <h1>New Run</h1>
+    <div class="container smaller">
+        <h1 style="text-align: center;">New Run</h1>
         <form method="POST" class="form-group">
             <div class="form-row">
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-3">
                     <input type="text" class="form-control" placeholder="Distance (in miles)" name="distance_in_miles">
                 </div>
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-3">
                     <input type="text" class="form-control" placeholder="Duration" name="duration">
                 </div>
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-3">
                     <input type="text" class="form-control" placeholder="Start Time" name="start_time">
+                </div>
+                <div class="form-group col-md-3">
+                    <input type="text" class="form-control" placeholder="Heart Rate" name="heart_rate">
                 </div>
             </div>
 
             <div class="form-row">
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-3">
                     <input type="text" class="form-control" placeholder="Podcast" name="podcast">
                 </div>
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-3">
                     <input type="text" class="form-control" placeholder="Episode" name="episode">
                 </div>
 
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-3">
+                    <input type="text" class="form-control" placeholder="Temperature" name="temperature">
+                </div>
+
+                <div class="form-group col-md-3">
                     <select class="form-control" name="quality">
                         <option selected>Quality</option>
                         <option value="Great">Great</option>
@@ -60,9 +41,17 @@
                 </div>
             </div>
 
-            <input type="submit" formaction="api_v1/run" class="btn btn-primary">
-            <input type="reset" class="btn btn-primary">
-            <button type="button" id="reset" onclick="Reset()" class="btn btn-primary">Clear All</button>
+            <div style="text-align: center;">
+                <div style="display: inline-block;">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="walkBox" value="walked" name="walk">
+                        <label class="form-check-label" for="walkBox">Walked?</label>
+                    </div>
+                    <input type="submit" formaction="api_v1/run" class="btn btn-primary">
+                    <input type="reset" class="btn btn-primary">
+                    <button type="button" id="reset" onclick="Reset()" class="btn btn-primary">Clear All</button>
+                </div>
+            </div>
         </form>
     </div>
 
@@ -75,18 +64,36 @@
             <th>Start time</th>
             <th>Podcast</th>
             <th>Episode</th>
+            <th>Temperature</th>
+            <th>Heart Rate</th>
             <th>Quality</th>
         </tr>
         {{range .Runs}}
-        <tr>
-            <td>{{.DistanceInMiles}}</td>
-            <td>{{.Duration}}</td>
-            <td>{{.StartDate}}</td>
-            <td>{{.StartTime}}</td>
-            <td>{{.Podcast}}</td>
-            <td>{{.Episode}}</td>
-            <td>{{.Quality}}</td>
-        </tr>
+            {{if .Walk}}
+                <tr class="bg-danger">
+                    <td>{{.DistanceInMiles}}</td>
+                    <td>{{.Duration}}</td>
+                    <td>{{.StartDate}}</td>
+                    <td>{{.StartTime}}</td>
+                    <td>{{.Podcast}}</td>
+                    <td>{{.Episode}}</td>
+                    <td>{{.Temperature}}</td>
+                    <td>{{.HeartRate}}</td>
+                    <td>{{.Quality}}</td>
+                </tr>
+            {{else}}
+                <tr class="bg-primary">
+                    <td>{{.DistanceInMiles}}</td>
+                    <td>{{.Duration}}</td>
+                    <td>{{.StartDate}}</td>
+                    <td>{{.StartTime}}</td>
+                    <td>{{.Podcast}}</td>
+                    <td>{{.Episode}}</td>
+                    <td>{{.Temperature}}</td>
+                    <td>{{.HeartRate}}</td>
+                    <td>{{.Quality}}</td>
+                </tr>
+            {{end}}
         {{end}}
     </table>
 {{end}}

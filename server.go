@@ -1,7 +1,6 @@
 package app
 
 import (
-	"html/template"
 	"net/http"
 	"strconv"
 	"time"
@@ -9,19 +8,20 @@ import (
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
+	"github.com/tmitchel/running-log/views"
 )
 
 type Server struct {
 	*mux.Router
 	DB    *Database
-	Index *template.Template
+	Index *views.View
 }
 
 func NewServer(db *Database) (*Server, error) {
 	server := &Server{
 		Router: mux.NewRouter().StrictSlash(true),
 		DB:     db,
-		Index:  template.Must(template.ParseFiles("views/index.html")),
+		Index:  views.NewView("bootstrap.html", "views/index.html"),
 	}
 
 	server.HandleFunc("/api_v1/run", server.AddRun()).Methods("POST")
@@ -41,8 +41,8 @@ func (s *Server) ServeIndex() http.HandlerFunc {
 			logrus.Error(err)
 			return
 		}
-		logrus.Infof("%+v\n", Runs{runs})
-		if err := s.Index.Execute(w, Runs{runs}); err != nil {
+
+		if err := s.Index.Render(w, Runs{runs}); err != nil {
 			logrus.Error(err)
 		}
 	}
@@ -76,6 +76,23 @@ func (s *Server) AddRun() http.HandlerFunc {
 			return
 		}
 
+		temp, err := strconv.ParseInt(r.FormValue("temperature"), 10, 64)
+		if err != nil {
+			logrus.Error(err)
+			return
+		}
+
+		hr, err := strconv.ParseInt(r.FormValue("heart_rate"), 10, 64)
+		if err != nil {
+			logrus.Error(err)
+			return
+		}
+
+		walk := false
+		if r.FormValue("walk") == "walked" {
+			walk = true
+		}
+
 		run := Run{
 			ID:              uuid.New(),
 			DistanceInMiles: distanceInMiles,
@@ -84,6 +101,9 @@ func (s *Server) AddRun() http.HandlerFunc {
 			Podcast:         r.FormValue("podcast"),
 			Episode:         r.FormValue("episode"),
 			Quality:         r.FormValue("quality"),
+			Temperature:     int(temp),
+			HeartRate:       int(hr),
+			Walk:            walk,
 		}
 
 		logrus.Infof("Adding run: %+v\n", run)

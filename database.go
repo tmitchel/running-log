@@ -55,6 +55,9 @@ func (d *Database) GetRuns() ([]LoggedRun, error) {
 			Podcast:         run.Podcast,
 			Episode:         run.Episode,
 			Quality:         run.Quality,
+			Temperature:     run.Temperature,
+			HeartRate:       run.HeartRate,
+			Walk:            run.Walk,
 		}
 
 		stime := strings.Split(run.StartTime.String(), " ")
