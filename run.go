@@ -20,6 +20,8 @@ type Run struct {
 	Walk            bool      `json:"walk"`
 }
 
+// LoggedRun represents a run with some of the information
+// combined into more useful things.
 type LoggedRun struct {
 	ID              uuid.UUID
 	DistanceInMiles float64

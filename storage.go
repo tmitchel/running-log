@@ -9,14 +9,20 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+// Storage wraps the contents of the file used for saving
+// runs.
 type Storage struct {
-	Name    string
+	// Name of storage file
+	Name string
+
+	// List of saved runs
 	Entries []Run
 }
 
+// Open the file (create it if it doesn't exist) and read
+// the contents into the Storage struct.
 func Open(file string) (*Storage, error) {
 	s := &Storage{Name: file}
-
 	if _, err := os.Stat(file); os.IsNotExist(err) {
 		s.Entries = make([]Run, 0)
 		return s, nil
@@ -41,6 +47,7 @@ func Open(file string) (*Storage, error) {
 func (s *Storage) AddRun(run *Run) error {
 	s.Entries = append(s.Entries, *run)
 
+	// write file in the background
 	go func() {
 		file, err := os.Create(s.Name)
 		if err != nil {
@@ -58,6 +65,8 @@ func (s *Storage) AddRun(run *Run) error {
 	return nil
 }
 
+// GetRuns reformats the Runs read from the file to add
+// more information.
 func (s *Storage) GetRuns() ([]LoggedRun, error) {
 	runs := make([]LoggedRun, len(s.Entries))
 	for i, run := range s.Entries {
@@ -82,6 +91,7 @@ func (s *Storage) GetRuns() ([]LoggedRun, error) {
 	return runs, nil
 }
 
+// Reset deletes everything.
 func (s *Storage) Reset() error {
 	s.Entries = make([]Run, 0)
 	return os.Remove(s.Name)

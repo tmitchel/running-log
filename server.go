@@ -11,12 +11,16 @@ import (
 	"github.com/tmitchel/running-log/views"
 )
 
+// Server wraps the router, storage, and the template
+// for displaying the web page.
 type Server struct {
 	*mux.Router
 	DB    *Storage
 	Index *views.View
 }
 
+// NewServer takes the Storage dependency, sets up the routes
+// and returns a pointer to itself.
 func NewServer(db *Storage) (*Server, error) {
 	server := &Server{
 		Router: mux.NewRouter().StrictSlash(true),
@@ -31,6 +35,7 @@ func NewServer(db *Storage) (*Server, error) {
 	return server, nil
 }
 
+// ServeIndex handles serving the web page.
 func (s *Server) ServeIndex() http.HandlerFunc {
 	type Runs struct {
 		Runs []LoggedRun
@@ -48,6 +53,7 @@ func (s *Server) ServeIndex() http.HandlerFunc {
 	}
 }
 
+// Reset is used to delete the database.
 func (s *Server) Reset() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		logrus.Info("Resetting database.")
@@ -56,6 +62,8 @@ func (s *Server) Reset() http.HandlerFunc {
 	}
 }
 
+// AddRun handles parsing information from the form and saving
+// the new run.
 func (s *Server) AddRun() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		distanceInMiles, err := strconv.ParseFloat(r.FormValue("distance_in_miles"), 64)
